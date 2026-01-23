@@ -40,9 +40,28 @@ Necesito que visites las siguientes URLs de análisis cripto. Como muchas usan g
 
 Estos sitios están bloqueados para scraping automático. Voy a pegar los datos manualmente al final:
 
-- **BTC Dominance:** (usá el valor del header de Coinglass si lo ves, ej: "BTC 57.6%")
 - **Calendario Económico:** (eventos de alto impacto esta semana)
 - **Glassnode LTH/SOPR:** (requiere suscripción paga - omitir)
+
+### Datos de CoinMarketCap API (Global Metrics)
+
+```
+BTC Dominance: 59.23%
+BTC Dominance 24h Change: +0.04%
+ETH Dominance: 11.77%
+Total Market Cap: $3.00T
+Total Market Cap 24h Change: +0.22%
+Total Volume 24h: $101.1B
+Volume 24h Change: -19.94%
+DeFi Market Cap: $69.5B
+DeFi Volume 24h Change: -21.66%
+Stablecoin Market Cap: $285.7B
+Stablecoin Volume 24h Change: -15.54%
+Derivatives Volume 24h: $773B
+Derivatives Volume 24h Change: -32.06%
+Active Cryptocurrencies: 8,968
+Active Exchanges: 917
+```
 
 ---
 
@@ -76,6 +95,14 @@ Estos sitios están bloqueados para scraping automático. Voy a pegar los datos 
 # Informe de Datos — Trading POD
 Fecha/Hora UTC: [timestamp]
 
+## MERCADO GLOBAL (CoinMarketCap API)
+- BTC Dominance: [X%] ([+/-X%] 24h)
+- ETH Dominance: [X%]
+- Total Market Cap: $[X]T ([+/-X%] 24h)
+- Total Volume 24h: $[X]B ([+/-X%] 24h)
+- Derivatives Volume 24h: $[X]B ([+/-X%] 24h)
+- Stablecoin Market Cap: $[X]B
+
 ## DERIVADOS (Coinglass)
 - Liquidation Heatmap: Liquidez concentrada en $[X] (arriba) / $[X] (abajo)
 - Liquidation Map: Longs $[X]M / Shorts $[X]M
@@ -83,7 +110,6 @@ Fecha/Hora UTC: [timestamp]
 - Funding BTC: [X%]
 - L/S Ratio: Global [X%/X%] / Top Traders [X:1]
 - Hyperliquid L/S: [X:1 o datos visibles]
-- BTC Dominance: [X%] (del header)
 
 ## ON-CHAIN
 - Exchange Netflow 24h: [+/-X] BTC — [entrada/salida]
@@ -95,7 +121,7 @@ Fecha/Hora UTC: [timestamp]
 ## COMPLEMENTARIOS
 - Fear & Greed: [X] ([clasificación])
 
-## DATOS MANUALES PENDIENTES
+## DATOS PENDIENTES
 - Calendario económico: [PENDIENTE - agregar manualmente]
 
 ## RESUMEN
