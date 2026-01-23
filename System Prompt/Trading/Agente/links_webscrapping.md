@@ -38,10 +38,27 @@ Necesito que visites las siguientes URLs de análisis cripto. Como muchas usan g
 
 ## PARTE 2: DATOS MANUALES (los agrego yo)
 
-Estos sitios están bloqueados para scraping automático. Voy a pegar los datos manualmente al final:
+Estos sitios están bloqueados para scraping automático. Seguí estos pasos:
 
-- **Calendario Económico:** (eventos de alto impacto esta semana)
-- **Glassnode LTH/SOPR:** (requiere suscripción paga - omitir)
+### Paso 1: Calendario Económico (API gratuita)
+Ejecutá este request en Postman o browser y filtrá por "High" impact:
+→ https://nfs.faireconomy.media/ff_calendar_thisweek.json (esta semana)
+→ https://nfs.faireconomy.media/ff_calendar_nextweek.json (próxima semana)
+(Sin API key requerida)
+
+### Paso 2: BTC Dominance (alternativa visual)
+Si querés el chart además del número, abrí y sacá screenshot:
+→ https://www.tradingview.com/symbols/BTC.D/
+
+### Paso 3: Glassnode LTH/SOPR
+❌ Requiere suscripción paga — omitir (usamos HODL Waves y MVRV como proxy)
+
+### Paso 4: CoinMarketCap API
+Ejecutá este request en Postman o browser y pegá el JSON:
+→ https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest
+(Header: X-CMC_PRO_API_KEY: TU_API_KEY)
+
+---
 
 ### Datos de CoinMarketCap API (Global Metrics)
 
