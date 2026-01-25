@@ -15,13 +15,27 @@ Necesito que visites las siguientes URLs de análisis cripto. Como muchas usan g
 ## ⚠️ PROCESOS ESPECIALES (LEER ANTES DE EMPEZAR)
 
 ### Para CryptoQuant (Exchange Reserve, Netflow):
-Los valores de cambio % 24h requieren interacción:
+Los valores de cambio % 24h requieren cálculo manual:
+
+**Exchange Reserve Δ% 24h:**
 1. Navegar a la URL
 2. Esperar carga completa (5 segundos)
-3. **Hacer hover sobre el último punto del gráfico** (extremo derecho)
-4. Capturar screenshot **CON el tooltip visible**
-5. Si no aparece tooltip, buscar panel "Statistics" o "Summary" en la página
-6. Alternativa: Comparar visualmente el valor actual vs hace 24h en el gráfico
+3. Configurar timeframe del gráfico a "1D" o "24h" si hay selector
+4. **Hover punto ACTUAL (extremo derecho)** → anotar valor en BTC
+5. **Hover punto HACE 24H (un día atrás)** → anotar valor en BTC
+6. **Calcular:** `Δ% = ((actual - hace24h) / hace24h) × 100`
+7. Reportar: "Exchange Reserve: [X] BTC | Δ24h: [+/-X%]"
+
+**Exchange Netflow:**
+1. Hover sobre las barras del último día
+2. Barras ROJAS = salida (negativo, bullish)
+3. Barras VERDES = entrada (positivo, bearish)
+4. Sumar el netflow de las últimas 24h
+
+**Si los tooltips no funcionan:**
+- Buscar panel "Statistics" o valores numéricos en la página
+- Usar estimación visual con nota `[ESTIMADO]`
+- Anotar en errores: "Δ% calculado visualmente, precisión ±2%"
 
 ### Para LookIntoBitcoin (HODL Waves, MVRV Z-Score):
 Los valores exactos de % están en tooltips:
@@ -60,7 +74,7 @@ Antes de empezar, anotar de la primera página de Coinglass:
 | # | URL | Datos a extraer | Proceso especial |
 |---|-----|-----------------|------------------|
 | 7 | https://cryptoquant.com/asset/btc/chart/exchange-flows/exchange-netflow-total | Valor en BTC (+entrada / -salida) últimas 24h | **HOVER sobre último punto** para valor exacto |
-| 8 | https://cryptoquant.com/asset/btc/chart/exchange-flows/exchange-reserve | Valor actual en BTC + cambio % 24h + tendencia | **HOVER sobre último punto** para Δ% |
+| 8 | https://cryptoquant.com/asset/btc/chart/exchange-flows/exchange-reserve | Valor actual en BTC + **Δ% 24h calculado** + tendencia | **HOVER 2 puntos** (actual + hace 24h) y calcular Δ% |
 | 9 | https://cryptoquant.com/asset/btc/chart/market-indicator/mvrv-ratio | **CRÍTICO: Valor numérico actual (ej: 1.85)** | Valor visible en gráfico o panel lateral |
 
 > ⚠️ **NOTA v2.1:** La URL anterior `/market-indicator/mvrv` estaba incorrecta. La correcta es `/mvrv-ratio`
