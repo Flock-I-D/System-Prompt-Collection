@@ -1,4 +1,4 @@
-# Solicitud: Recolección de Datos de Trading
+# Solicitud: Recolección de Datos de Trading - v2.0
 
 Necesito que visites las siguientes URLs de análisis cripto. Como muchas usan gráficos interactivos (canvas, SVG, JS), **tomá screenshot de cada página** y luego extraé los datos visibles del screenshot para generar el informe.
 
@@ -14,7 +14,7 @@ Necesito que visites las siguientes URLs de análisis cripto. Como muchas usan g
 
 ## PARTE 1: URLs AUTOMÁTICAS (visitá estas)
 
-**Derivados (Coinglass):**
+### Derivados (Coinglass)
 1. https://www.coinglass.com/pro/futures/LiquidationHeatMap
 2. https://www.coinglass.com/pro/futures/LiquidationMap
 3. https://www.coinglass.com/pro/futures/OpenInterest
@@ -22,97 +22,115 @@ Necesito que visites las siguientes URLs de análisis cripto. Como muchas usan g
 5. https://www.coinglass.com/LongShortRatio
 6. https://www.coinglass.com/pro/futures/hyperliquid-long-short-ratio
 
-**On-Chain (CryptoQuant):**
+### On-Chain TIER 1 - CryptoQuant (señales primarias, refresh ~1h)
 7. https://cryptoquant.com/asset/btc/chart/exchange-flows/exchange-netflow-total
 8. https://cryptoquant.com/asset/btc/chart/exchange-flows/exchange-reserve
+9. **https://cryptoquant.com/asset/btc/chart/market-indicator/mvrv** ← CRÍTICO para Paso 3
 
-**On-Chain (LookIntoBitcoin):**
-9. https://www.lookintobitcoin.com/charts/hodl-waves/
-10. https://www.lookintobitcoin.com/charts/mvrv-zscore/
-11. https://www.lookintobitcoin.com/charts/pi-cycle-top-indicator/
+### On-Chain TIER 2 - LookIntoBitcoin (confirmación macro, refresh ~24h)
+10. https://www.lookintobitcoin.com/charts/hodl-waves/
+11. https://www.lookintobitcoin.com/charts/mvrv-zscore/
+12. https://www.lookintobitcoin.com/charts/pi-cycle-top-indicator/
 
-**Complementarios:**
-12. https://alternative.me/crypto/fear-and-greed-index/
+### Complementarios
+13. https://alternative.me/crypto/fear-and-greed-index/
 
 ---
 
 ## PARTE 2: DATOS MANUALES (los agrego yo)
 
-Estos sitios están bloqueados para scraping automático. Seguí estos pasos:
+Estos sitios están bloqueados para scraping automático:
 
-### Paso 1: Calendario Económico (API gratuita)
-Ejecutá este request en Postman o browser y filtrá por "High" impact:
-→ https://nfs.faireconomy.media/ff_calendar_thisweek.json (esta semana)
-→ https://nfs.faireconomy.media/ff_calendar_nextweek.json (próxima semana)
-(Sin API key requerida)
-
-### Paso 2: BTC Dominance (alternativa visual)
-Si querés el chart además del número, abrí y sacá screenshot:
-→ https://www.tradingview.com/symbols/BTC.D/
-
-### Paso 3: Glassnode LTH/SOPR
-❌ Requiere suscripción paga — omitir (usamos HODL Waves y MVRV como proxy)
-
-### Paso 4: CoinMarketCap API
-Ejecutá este request en Postman o browser y pegá el JSON:
-→ https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest
-(Header: X-CMC_PRO_API_KEY: TU_API_KEY)
-
----
-
-### Datos de CoinMarketCap API (Global Metrics)
-
+### Calendario Económico (API gratuita, sin key)
 ```
-BTC Dominance: 59.23%
-BTC Dominance 24h Change: +0.04%
-ETH Dominance: 11.77%
-Total Market Cap: $3.00T
-Total Market Cap 24h Change: +0.22%
-Total Volume 24h: $101.1B
-Volume 24h Change: -19.94%
-DeFi Market Cap: $69.5B
-DeFi Volume 24h Change: -21.66%
-Stablecoin Market Cap: $285.7B
-Stablecoin Volume 24h Change: -15.54%
-Derivatives Volume 24h: $773B
-Derivatives Volume 24h Change: -32.06%
-Active Cryptocurrencies: 8,968
-Active Exchanges: 917
+GET https://nfs.faireconomy.media/ff_calendar_thisweek.json
+GET https://nfs.faireconomy.media/ff_calendar_nextweek.json
 ```
+Filtrar por `"impact": "High"`
+
+### CoinMarketCap Global Metrics (requiere API key)
+```
+GET https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest
+Header: X-CMC_PRO_API_KEY: [TU_KEY]
+```
+
+### Glassnode LTH/SOPR
+❌ Requiere suscripción paga — omitir (usamos CryptoQuant MVRV + LookIntoBitcoin como proxy)
 
 ---
 
 ## Qué necesito de cada fuente
 
-**Coinglass:**
-- Liquidation Heatmap: zonas de liquidez arriba/abajo del precio actual, colores intensos = mayor concentración
-- Liquidation Map: barras de liquidez longs (verde) vs shorts (rojo), valores en millones
-- Open Interest: OI total en billions y cambio % 24h
-- Funding Rate: funding actual de BTC (valor decimal, ej: 0.0045%)
-- Long/Short Ratio: ratio global y de top traders
-- Hyperliquid L/S: posicionamiento en Hyperliquid
+### Coinglass
+| Página | Datos a extraer |
+|--------|-----------------|
+| Liquidation Heatmap | Zonas de liquidez arriba/abajo del precio, colores brillantes = alta concentración |
+| Liquidation Map | Barras longs (verde) vs shorts (rojo), valores en millones |
+| Open Interest | OI total en billions + cambio % 24h |
+| Funding Rate | Funding BTC (valor decimal, ej: 0.0045%) |
+| Long/Short Ratio | Ratio global + top traders |
+| Hyperliquid L/S | Posicionamiento en Hyperliquid |
 
-**CryptoQuant:**
-- Exchange Netflow: valor en BTC, positivo = entrada, negativo = salida
-- Exchange Reserve: tendencia de la curva
+### CryptoQuant (TIER 1)
+| Página | Datos a extraer |
+|--------|-----------------|
+| Exchange Netflow | Valor en BTC (+entrada / -salida) |
+| Exchange Reserve | Valor actual + cambio % 24h + tendencia visual |
+| **MVRV Ratio** | **Valor numérico actual (ej: 1.85) — CRÍTICO** |
 
-**LookIntoBitcoin:**
-- HODL Waves: % aproximado en bandas de colores (>1 año vs <3 meses)
-- MVRV Z-Score: valor numérico y zona de color (verde/amarillo/rojo)
-- Pi Cycle: si las dos líneas (111 DMA y 350 DMA x2) están cerca o cruzándose
+### LookIntoBitcoin (TIER 2)
+| Página | Datos a extraer |
+|--------|-----------------|
+| HODL Waves | % banda >1 año + % banda <3 meses |
+| MVRV Z-Score | Valor numérico + zona de color (verde/amarillo/rojo) |
+| Pi Cycle | Estado de las líneas (sin señal/acercándose/cruzando) |
 
-**Complementarios:**
-- Fear & Greed: número (0-100) y clasificación
+### Complementarios
+| Página | Datos a extraer |
+|--------|-----------------|
+| Fear & Greed | Número (0-100) + clasificación |
 
 ---
 
-## Formato del informe
+## Thresholds de Anomalía (Paso 3 del Screening)
 
-```
-# Informe de Datos — Trading POD
+### TIER 1: Señales Intraday
+
+| MVRV | Exchange Reserve 24h | Score | Anomaly Type |
+|------|---------------------|-------|--------------|
+| < 0.8 | Δ < -5% | +3 | 🚨 EXTREME_ACCUMULATION |
+| 0.8 - 1.5 | Δ < -5% | +2 | ✅ ACCUMULATION_STRONG_HOLDING |
+| > 3.5 | Δ > +5% | +3 | 🚨 EXTREME_DISTRIBUTION |
+| 3.0 - 3.5 | Δ > +5% | +2 | ⚠️ DISTRIBUTION |
+| 1.5 - 3.0 | Δ ±5% | +0 | → NEUTRAL |
+
+### TIER 2: Confirmación Macro
+
+| HODL >1y | MVRV Z-Score | Señal Macro | Confianza |
+|----------|--------------|-------------|-----------|
+| > 65% | < 0 | BULLISH | ALTA |
+| < 55% | > 6 | BEARISH | ALTA |
+| 55-65% | cualquier | NEUTRAL | BAJA |
+
+### Integración
+
+- Si TIER 1 y TIER 2 confirman → Score +1, Confianza ALTA
+- Si divergen → Score -1, Confianza BAJA
+- **Califica para Deep Dive:** Score ≥ 3
+
+---
+
+## Formato del Informe
+
+```markdown
+# Informe de Datos — Trading POD v2.0
 Fecha/Hora UTC: [timestamp]
+Precio BTC: $[X]
 
-## MERCADO GLOBAL (CoinMarketCap API)
+═══════════════════════════════════════════════════════════════
+                    MERCADO GLOBAL
+═══════════════════════════════════════════════════════════════
+**CoinMarketCap API:**
 - BTC Dominance: [X%] ([+/-X%] 24h)
 - ETH Dominance: [X%]
 - Total Market Cap: $[X]T ([+/-X%] 24h)
@@ -120,45 +138,121 @@ Fecha/Hora UTC: [timestamp]
 - Derivatives Volume 24h: $[X]B ([+/-X%] 24h)
 - Stablecoin Market Cap: $[X]B
 
-## DERIVADOS (Coinglass)
-- Liquidation Heatmap: Liquidez concentrada en $[X] (arriba) / $[X] (abajo)
+═══════════════════════════════════════════════════════════════
+                    DERIVADOS (Coinglass)
+═══════════════════════════════════════════════════════════════
+**Liquidez:**
+- Heatmap: Concentración arriba en $[X] / abajo en $[X]
 - Liquidation Map: Longs $[X]M / Shorts $[X]M
-- Open Interest: $[X]B ([+/-X%] 24h)
-- Funding BTC: [X%]
-- L/S Ratio: Global [X%/X%] / Top Traders [X:1]
-- Hyperliquid L/S: [X:1 o datos visibles]
+- Magnet Zone Principal: [ARRIBA/ABAJO] — Volumen: $[X]M
 
-## ON-CHAIN
-- Exchange Netflow 24h: [+/-X] BTC — [entrada/salida]
-- Exchange Reserve: [creciendo/cayendo/estable]
-- HODL Waves: >1y [X%] / <3m [X%]
-- MVRV Z-Score: [X] — [zona verde/amarilla/roja]
+**Posicionamiento:**
+- Open Interest: $[X]B ([+/-X%] 24h)
+- Funding BTC: [X%] — Estado: [Normal/Elevado/Extremo]
+- L/S Ratio Global: [X%/X%]
+- L/S Top Traders: [X:1] — Tendencia: [hacia longs/shorts]
+- Hyperliquid L/S: [X:1]
+
+═══════════════════════════════════════════════════════════════
+              ON-CHAIN (Paso 3 del Screening)
+═══════════════════════════════════════════════════════════════
+
+**TIER 1 - Señales Primarias (CryptoQuant):**
+- MVRV Ratio: [X]
+  └─ Zona: [<0.8 Extreme Acc / 0.8-1.5 Acc / 1.5-3.0 Neutral / 3.0-3.5 Dist / >3.5 Extreme Dist]
+- Exchange Reserve: [X] BTC
+  └─ Cambio 24h: [+/-X%]
+  └─ Tendencia: [creciendo/cayendo/estable]
+- Exchange Netflow 24h: [+/-X] BTC
+  └─ Interpretación: [entrada/salida de exchanges]
+
+**Anomalía TIER 1:**
+[✅ SI / ❌ NO] — Tipo: [ACCUMULATION_STRONG_HOLDING / DISTRIBUTION / NEUTRAL]
+Score Tier 1: [X de 5]
+
+**TIER 2 - Confirmación Macro (LookIntoBitcoin):**
+- HODL Waves:
+  └─ >1 año: [X%]
+  └─ <3 meses: [X%]
+  └─ Tendencia 7d: [+/-X%] en >1 año
+- MVRV Z-Score: [X]
+  └─ Zona: [verde <3 / amarilla 3-7 / roja >7]
 - Pi Cycle: [sin señal/acercándose/cruzando]
 
-## COMPLEMENTARIOS
+**Señal Macro:**
+[BULLISH / BEARISH / NEUTRAL] — Confianza: [ALTA/MEDIA/BAJA]
+
+**PASO 3 INTEGRADO:**
+Score Final: [X de 5]
+Anomalía Detectada: [tipo]
+Califica para Deep Dive: [✅ SI (score ≥3) / ❌ NO]
+Confluencia TIER1 + TIER2: [✅ Confirmada / ⚠️ Divergente / ❌ Contradictoria]
+
+<reflection>
+¿Los datos de TIER 1 y TIER 2 cuentan la misma historia?
+- Si MVRV <1.5 + Reserve ↓ PERO HODL >1y cayendo → DIVERGENCIA (bajar confianza)
+- Si MVRV >3.0 + Reserve ↑ Y HODL >1y cayendo → CONFIRMACIÓN (subir confianza)
+</reflection>
+
+═══════════════════════════════════════════════════════════════
+                    COMPLEMENTARIOS
+═══════════════════════════════════════════════════════════════
 - Fear & Greed: [X] ([clasificación])
 
-## DATOS PENDIENTES
-- Calendario económico: [PENDIENTE - agregar manualmente]
+═══════════════════════════════════════════════════════════════
+                    CALENDARIO ECONÓMICO
+═══════════════════════════════════════════════════════════════
+**Eventos High Impact (próximos 7 días):**
+| Fecha | Hora UTC | Evento | Moneda | Impacto Esperado |
+|-------|----------|--------|--------|------------------|
+| [X] | [X] | [X] | [X] | [X] |
 
-## RESUMEN
-Señales alcistas:
-- [bullet]
-- [bullet]
+═══════════════════════════════════════════════════════════════
+                    RESUMEN EJECUTIVO
+═══════════════════════════════════════════════════════════════
 
-Señales bajistas:
-- [bullet]
-- [bullet]
+**Señales Alcistas:**
+- [bullet basado en datos]
+- [bullet basado en datos]
 
-Sesgo general: [BULLISH/BEARISH/NEUTRAL/MIXTO]
-Confianza: [Alta/Media/Baja]
+**Señales Bajistas:**
+- [bullet basado en datos]
+- [bullet basado en datos]
+
+**Sesgo General:** [BULLISH/BEARISH/NEUTRAL/MIXTO]
+**Confianza:** [ALTA/MEDIA/BAJA]
+
+**Activos que califican para Deep Dive (score Paso 3 ≥3):**
+- BTC: [SÍ/NO] — Score: [X]
+
+═══════════════════════════════════════════════════════════════
+                    DATOS PENDIENTES / ERRORES
+═══════════════════════════════════════════════════════════════
+- [Listar URLs que fallaron o requieren login]
 ```
 
 ---
 
-## Notas importantes
-- Usá screenshots para extraer datos de gráficos JS/canvas/SVG
-- El BTC Dominance aparece en el header de Coinglass (ej: "Dominance: BTC 57.6%")
-- Si una página requiere login y no tenés sesión activa, marcá [REQUIERE LOGIN]
-- Si un dato no es visible ni en screenshot, marcá [NO DISPONIBLE]
-- Esto es para mi análisis personal de trading
+## Notas de Implementación
+
+### Prioridades de Extracción
+1. **CRÍTICO:** MVRV Ratio de CryptoQuant (sin esto, Paso 3 no funciona)
+2. **CRÍTICO:** Exchange Reserve cambio 24h
+3. **IMPORTANTE:** HODL Waves >1 año
+4. **IMPORTANTE:** Liquidation Heatmap magnet zones
+
+### Manejo de Errores
+- Si CryptoQuant requiere login → marcá `[REQUIERE LOGIN]`
+- Si un gráfico está en blanco → esperá 5 segundos más y retry
+- Si screenshot no captura datos → marcá `[SCREENSHOT INCOMPLETO]`
+- BTC Dominance aparece en header de Coinglass (ej: "Dominance: BTC 57.6%")
+
+### Changelog vs v1.0
+| Aspecto | v1.0 | v2.0 |
+|---------|------|------|
+| Paso 3 fuente | "Glassnode (omitir)" | CryptoQuant MVRV + Reserve |
+| Estructura | Flat | TIER 1 (1h) + TIER 2 (24h) |
+| Thresholds | ❌ No definidos | ✅ Tabla con scores |
+| Lag compensation | ❌ No | ✅ TIER 1 intraday, TIER 2 macro |
+| Reflection | ❌ Ausente | ✅ Validación de confluencia |
+| Output format | Bullets sueltos | Score estructurado + anomaly type |
